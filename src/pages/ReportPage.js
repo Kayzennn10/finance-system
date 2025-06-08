@@ -81,7 +81,7 @@ const ReportPage = () => {
       },
       title: {
         display: true,
-        text: \`Tren Keuangan \${reportType === 'monthly' ? 'Bulanan' : 'Tahunan'} ${selectedYear}\`,
+        text: `\Tren Keuangan \${reportType === 'monthly' ? 'Bulanan' : 'Tahunan'} ${selectedYear}`,
       },
     },
     scales: {

@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import db from '../config/db.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Fungsi untuk registrasi (Sign Up) - Improved
 export const register = async (req, res) => {
@@ -41,8 +43,8 @@ export const register = async (req, res) => {
       }
     );
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    console.error('Register error:', err);
+    res.status(500).json({ msg: 'Server Error', error: err.message });
   }
 };
 
@@ -81,8 +83,8 @@ export const login = async (req, res) => {
       }
     );
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    console.error('Login error:', err);
+    res.status(500).json({ msg: 'Server Error', error: err.message });
   }
 };
 
@@ -96,7 +98,7 @@ export const getUserData = async (req, res) => {
     }
     res.json(users[0]);
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    console.error('Get user data error:', err);
+    res.status(500).json({ msg: 'Server Error', error: err.message });
   }
 };

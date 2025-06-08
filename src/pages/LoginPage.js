@@ -10,7 +10,8 @@ const LoginPage = () => {
   const handleLogin = async () => {
   try {
     const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
-    localStorage.setItem('token', response.data.token);  // Simpan token JWT ke localStorage
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('userId', response.data.user.id);
     window.location.href = '/dashboard';  // Redirect ke dashboard setelah login berhasil
   } catch (err) {
     alert('Login failed! Invalid credentials.');

@@ -10,6 +10,7 @@ import transactionRoutes from './routes/transactionRoutes.js';
 import budgetRoutes from './routes/budgetRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import goalRoutes from './routes/goalRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -41,21 +42,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Auth Routes
-app.post('/api/auth/register', (req, res) => {
-  console.log('Register endpoint hit with data:', req.body);
-  authController.register(req, res);
-});
-
-app.post('/api/auth/login', (req, res) => {
-  console.log('Login endpoint hit with data:', req.body);
-  authController.login(req, res);
-});
-
-app.get('/api/auth/dashboard', (req, res) => {
-  console.log('Dashboard endpoint hit');
-  authController.getUserData(req, res);
-});
+// Auth Routes - Gunakan authRoutes sebagai middleware
+app.use('/api/auth', authRoutes);
 
 // Transaction Routes
 app.use('/api/transactions', transactionRoutes);
@@ -75,9 +63,9 @@ app.listen(PORT, () => {
   console.log(`=================================`);
   console.log('Available routes:');
   console.log('- GET  /api/health');
-  console.log('- POST /api/auth/register');
-  console.log('- POST /api/auth/login');
-  console.log('- GET  /api/auth/dashboard');
+  console.log('- POST /api/auth/register'); // Ini akan ditangani oleh authRoutes
+  console.log('- POST /api/auth/login');    // Ini akan ditangani oleh authRoutes
+  console.log('- GET  /api/auth/dashboard'); // Ini akan ditangani oleh authRoutes dengan auth middleware
   console.log('- GET  /api/transactions');
   console.log('- GET  /api/budgets');
   console.log('- GET  /api/reports');

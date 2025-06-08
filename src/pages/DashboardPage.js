@@ -14,6 +14,7 @@ import {
   Tooltip, 
   Legend 
 } from 'chart.js';
+import { useNavigate } from 'react-router-dom';
 
 // Register Chart.js components
 ChartJS.register(
@@ -39,6 +40,7 @@ const DashboardPage = () => {
   });
   const [monthlyData, setMonthlyData] = useState([]);
   const [currentMonth, setCurrentMonth] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -72,7 +74,7 @@ const DashboardPage = () => {
 
   // Function to fetch financial summary
   const fetchFinancialSummary = (userId) => {
-    axios.get(`http://localhost:5000/api/financial-summary/${userId}`)
+    axios.get(`http://localhost:5000/api/reports/financial-summary/${userId}`)
       .then(response => {
         setFinancialSummary(response.data);
       })
@@ -83,7 +85,7 @@ const DashboardPage = () => {
 
   // Function to fetch monthly data for trends
   const fetchMonthlyData = (userId) => {
-    axios.get(`http://localhost:5000/api/monthly-data/${userId}`)
+    axios.get(`http://localhost:5000/api/reports/monthly-data/${userId}`)
       .then(response => {
         setMonthlyData(response.data);
       })
@@ -299,9 +301,9 @@ const DashboardPage = () => {
 
           {/* User Actions */}
           <div className="dashboard-actions">
-            <button className="action-btn primary">Tambah Transaksi</button>
-            <button className="action-btn secondary">Lihat Laporan</button>
-            <button className="action-btn tertiary">Atur Anggaran</button>
+            <button className="action-btn primary" onClick={() => navigate('/add-transaction')}>Tambah Transaksi</button>
+            <button className="action-btn secondary" onClick={() => navigate('/reports')}>Lihat Laporan</button>
+            <button className="action-btn tertiary" onClick={() => navigate('/manage-budget')}>Atur Anggaran</button>
           </div>
         </div>
       ) : (
