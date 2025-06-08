@@ -1,11 +1,15 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
+import cors from 'cors';
+import express from 'express';
+import dotenv from 'dotenv';
 
 // Load environment variables
 dotenv.config();
 
-const authController = require('./controllers/authController');
+import * as authController from './controllers/authController.js';
+import transactionRoutes from './routes/transactionRoutes.js';
+import budgetRoutes from './routes/budgetRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
+import goalRoutes from './routes/goalRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -53,6 +57,16 @@ app.get('/api/auth/dashboard', (req, res) => {
   authController.getUserData(req, res);
 });
 
+// Transaction Routes
+app.use('/api/transactions', transactionRoutes);
+
+// Budget Routes
+app.use('/api/budgets', budgetRoutes);
+
+// Report Routes
+app.use('/api/reports', reportRoutes);
+app.use('/api/goals', goalRoutes);
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`=================================`);
@@ -64,6 +78,10 @@ app.listen(PORT, () => {
   console.log('- POST /api/auth/register');
   console.log('- POST /api/auth/login');
   console.log('- GET  /api/auth/dashboard');
+  console.log('- GET  /api/transactions');
+  console.log('- GET  /api/budgets');
+  console.log('- GET  /api/reports');
+  console.log('- GET  /api/goals');
   console.log(`=================================`);
 });
 

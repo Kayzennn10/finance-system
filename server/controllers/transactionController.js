@@ -1,26 +1,32 @@
-const db = require('../config/db');  // Pastikan kamu mengatur koneksi db dengan benar
+import db from '../config/db.js';
 
 // Fungsi untuk menambah transaksi
-const addTransaction = (req, res) => {
-  const { type, amount, category, description } = req.body;
-  const userId = req.user.id;  // Ambil ID pengguna dari JWT
+export const addTransaction = async (req, res) => {
+  const { user_id, type, amount, category, description, transaction_date } = req.body;
 
-  // Periksa apakah data lengkap
-  if (!type || !amount || !category) {
-    return res.status(400).send('Missing required fields');
+  if (!user_id || !type || !amount || !category || !description || !transaction_date) {
+    return res.status(400).json({ msg: 'Please enter all fields' });
   }
 
-  // Query untuk menambah transaksi
-  db.query(
-    'INSERT INTO transactions (user_id, type, amount, category, description) VALUES (?, ?, ?, ?, ?)',
-    [userId, type, amount, category, description],
-    (err, result) => {
-      if (err) {
-        return res.status(500).send('Error adding transaction');
-      }
-      res.status(201).send('Transaction added successfully');
-    }
-  );
+  try {
+    const [result] = await db.query(
+      'INSERT INTO transactions (user_id, type, amount, category, description, transaction_date) VALUES (?, ?, ?, ?, ?, ?)',
+      [user_id, type, amount, category, description, transaction_date]
+    );
+    res.status(201).json({ message: 'Transaction added successfully', transactionId: result.insertId });
+  } catch (error) {
+    console.error('Error adding transaction:', error);
+    res.status(500).json({ message: 'Error adding transaction', error: error.message });
+  }
 };
 
-module.exports = { addTransaction };
+export const getTransactions = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const [rows] = await db.query('SELECT * FROM transactions WHERE user_id = ?', [userId]);
+    res.json(rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};

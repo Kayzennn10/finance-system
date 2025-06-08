@@ -1,14 +1,15 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const authController = require('../controllers/authController');
+import { register, login, getUserData } from '../controllers/authController.js';
+import auth from '../middleware/auth.js';
 
-// Route untuk register
-router.post('/register', authController.register);
+// Register route
+router.post('/register', register);
 
-// Route untuk login
-router.post('/login', authController.login);
+// Login route
+router.post('/login', login);
 
-// Route untuk dashboard
-router.get('/dashboard', authController.getUserData);
+// Dashboard (protected) route
+router.get('/dashboard', auth, getUserData);
 
-module.exports = router;
+export default router;

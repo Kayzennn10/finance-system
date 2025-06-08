@@ -1,26 +1,28 @@
-const db = require('../config/db');  // Pastikan kamu mengatur koneksi db dengan benar
+import db from '../config/db.js';
 
 // Fungsi untuk menambah anggaran
-const addBudget = (req, res) => {
-  const { category, amount, month, year } = req.body;
-  const userId = req.user.id;  // Ambil ID pengguna dari JWT
+export const addBudget = async (req, res) => {
+  const { user_id, category, amount, month, year } = req.body;
 
-  // Periksa apakah data lengkap
-  if (!category || !amount || !month || !year) {
-    return res.status(400).send('Missing required fields');
+  try {
+    const [result] = await db.query(
+      'INSERT INTO budgets (user_id, category, amount, month, year) VALUES (?, ?, ?, ?, ?)',
+      [user_id, category, amount, month, year]
+    );
+    res.status(201).json({ message: 'Budget added successfully', budgetId: result.insertId });
+  } catch (error) {
+    console.error('Error adding budget:', error);
+    res.status(500).json({ message: 'Error adding budget', error: error.message });
   }
-
-  // Query untuk menambah anggaran
-  db.query(
-    'INSERT INTO budgets (user_id, category, amount, month, year) VALUES (?, ?, ?, ?, ?)',
-    [userId, category, amount, month, year],
-    (err, result) => {
-      if (err) {
-        return res.status(500).send('Error adding budget');
-      }
-      res.status(201).send('Budget added successfully');
-    }
-  );
 };
 
-module.exports = { addBudget };
+export const getBudgets = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const [rows] = await db.query('SELECT * FROM budgets WHERE user_id = ?', [userId]);
+    res.json(rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};

@@ -1,9 +1,12 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const authenticateJWT = require('../middleware/authMiddleware');
-const { addBudget } = require('../controllers/budgetController');
+import { addBudget, getBudgets } from '../controllers/budgetController.js';
+import auth from '../middleware/auth.js';
 
 // Route untuk menambah anggaran (dengan autentikasi JWT)
-router.post('/', authenticateJWT, addBudget);
+router.post('/api/budgets', auth, addBudget);
 
-module.exports = router;
+// Get all budgets for a user
+router.get('/api/budgets/:userId', auth, getBudgets);
+
+export default router;
